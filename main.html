@@ -337,7 +337,7 @@
         <span>Keep me signed in for 7 days</span>
       </label>
 
-      <button class="btn" onclick="handleLogin()">Sign in</button>
+      <input type="button" class="btn" value="Sign in" onclick="handleLogin()" />
 
       <hr class="divider" />
       <p class="footer-link">
@@ -352,7 +352,7 @@
           <h1 id="welcome-name">Hello, admin 👋</h1>
           <p class="welcome-sub">You're signed in via saved session</p>
         </div>
-        <button class="logout-btn" onclick="handleLogout()">Sign out</button>
+        <input type="button" id="logout" class="logout-btn" value="Sign out" onclick="handleLogout()" />
       </div>
 
       <div class="stat-grid">
@@ -391,7 +391,7 @@
       }
 
       /* ─── Mock user store ─── */
-      const USERS = { admin: 'password123', user: 'hello123' };
+      const USERS = { admin: 'password123', user: 'password' };
 
       /* ─── Check existing session on load ─── */
       window.addEventListener('DOMContentLoaded', () => {
@@ -412,14 +412,12 @@
         err.classList.remove('show');
 
         if (!u || !p) {
-          document.getElementById('error-text').textContent = 'Please enter your username and password.';
-          err.classList.add('show');
+          alert('Invalid username or password');
           return;
         }
 
         if (USERS[u] !== p) {
-          document.getElementById('error-text').textContent = 'Invalid username or password.';
-          err.classList.add('show');
+          alert('Invalid username or password');
           return;
         }
 
