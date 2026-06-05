@@ -4,7 +4,479 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      :root {
+        --bg:        #0d0d0f;
+        --surface:   #16161a;
+        --surface2:  #1e1e24;
+        --border:    rgba(255,255,255,0.07);
+        --border2:   rgba(255,255,255,0.13);
+        --text:      #f0ede8;
+        --muted:     #8a8897;
+        --accent:    #b8a9f5;
+        --accent-dk: #7c6de0;
+        --green:     #5dcaa5;
+        --red:       #f09595;
+        --radius:    14px;
+        --radius-sm: 8px;
+      }
+
+      body {
+        font-family: 'DM Sans', sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Ambient blobs */
+      body::before, body::after {
+        content: '';
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(90px);
+        opacity: 0.12;
+        pointer-events: none;
+        z-index: 0;
+      }
+      body::before {
+        width: 520px; height: 520px;
+        background: #7c6de0;
+        top: -140px; left: -120px;
+      }
+      body::after {
+        width: 420px; height: 420px;
+        background: #5dcaa5;
+        bottom: -100px; right: -80px;
+      }
+
+      /* ── Card ── */
+      .card {
+        position: relative;
+        z-index: 1;
+        background: var(--surface);
+        border: 1px solid var(--border2);
+        border-radius: var(--radius);
+        width: 100%;
+        max-width: 440px;
+        padding: 2.5rem 2.5rem 2rem;
+        animation: rise 0.45s cubic-bezier(0.22,1,0.36,1) both;
+      }
+      @keyframes rise {
+        from { opacity: 0; transform: translateY(22px) scale(0.97); }
+        to   { opacity: 1; transform: none; }
+      }
+
+      /* ── Header ── */
+      .logo-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 2rem;
+      }
+      .logo-mark {
+        width: 36px; height: 36px;
+        background: linear-gradient(135deg, #b8a9f5, #7c6de0);
+        border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        font-family: 'Syne', sans-serif;
+        font-weight: 700; font-size: 16px;
+        color: #fff;
+        flex-shrink: 0;
+      }
+      .logo-label {
+        font-family: 'Syne', sans-serif;
+        font-weight: 600;
+        font-size: 17px;
+        letter-spacing: -0.02em;
+        color: var(--text);
+      }
+
+      h1 {
+        font-family: 'Syne', sans-serif;
+        font-size: 1.65rem;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        color: var(--text);
+        margin-bottom: 0.35rem;
+      }
+      .subtitle {
+        font-size: 0.9rem;
+        color: var(--muted);
+        margin-bottom: 1.75rem;
+        font-weight: 300;
+      }
+
+      /* ── Form ── */
+      .field { margin-bottom: 1rem; }
+      label {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+      input[type="text"],
+      input[type="password"] {
+        width: 100%;
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        border-radius: var(--radius-sm);
+        color: var(--text);
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.95rem;
+        padding: 0.65rem 0.9rem;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+      input[type="text"]:focus,
+      input[type="password"]:focus {
+        border-color: var(--accent-dk);
+        box-shadow: 0 0 0 3px rgba(124,109,224,0.18);
+      }
+
+      /* ── Remember row ── */
+      .remember-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0.4rem 0 1.4rem;
+        cursor: pointer;
+      }
+      .remember-row input[type="checkbox"] {
+        appearance: none;
+        width: 17px; height: 17px;
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        border-radius: 5px;
+        cursor: pointer;
+        flex-shrink: 0;
+        position: relative;
+        transition: background 0.15s, border-color 0.15s;
+      }
+      .remember-row input[type="checkbox"]:checked {
+        background: var(--accent-dk);
+        border-color: var(--accent-dk);
+      }
+      .remember-row input[type="checkbox"]:checked::after {
+        content: '';
+        position: absolute;
+        left: 4px; top: 1.5px;
+        width: 6px; height: 10px;
+        border: 2px solid #fff;
+        border-left: none; border-top: none;
+        transform: rotate(45deg);
+      }
+      .remember-row span {
+        font-size: 0.875rem;
+        color: var(--muted);
+        user-select: none;
+      }
+
+      /* ── Button ── */
+      .btn {
+        width: 100%;
+        padding: 0.75rem;
+        background: var(--accent-dk);
+        color: #fff;
+        border: none;
+        border-radius: var(--radius-sm);
+        font-family: 'Syne', sans-serif;
+        font-size: 0.95rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.12s;
+      }
+      .btn:hover  { background: #6a5bd4; }
+      .btn:active { transform: scale(0.98); }
+
+      /* ── Alert ── */
+      .alert {
+        display: none;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.83rem;
+        padding: 0.6rem 0.85rem;
+        border-radius: var(--radius-sm);
+        margin-bottom: 1rem;
+      }
+      .alert.error   { background: rgba(240,149,149,0.1); color: var(--red);   border: 1px solid rgba(240,149,149,0.25); }
+      .alert.success { background: rgba(93,202,165,0.1);  color: var(--green); border: 1px solid rgba(93,202,165,0.25); }
+      .alert.show    { display: flex; }
+
+      /* ── Divider ── */
+      .divider {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 1.5rem 0 1rem;
+      }
+      .footer-link {
+        text-align: center;
+        font-size: 0.83rem;
+        color: var(--muted);
+      }
+      .footer-link a {
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 500;
+      }
+      .footer-link a:hover { text-decoration: underline; }
+
+      /* ── Dashboard ── */
+      #dashboard { display: none; }
+      .dash-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1.5rem;
+        gap: 1rem;
+      }
+      .dash-header h1 { font-size: 1.45rem; }
+      .welcome-sub {
+        font-size: 0.88rem;
+        color: var(--muted);
+        font-weight: 300;
+        margin-top: 3px;
+      }
+
+      .logout-btn {
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        color: var(--muted);
+        border-radius: var(--radius-sm);
+        padding: 0.45rem 0.9rem;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.83rem;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: color 0.15s, border-color 0.15s;
+        flex-shrink: 0;
+      }
+      .logout-btn:hover { color: var(--text); border-color: var(--border2); }
+
+      .stat-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 1.25rem;
+      }
+      .stat {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 0.85rem 1rem;
+      }
+      .stat-label {
+        font-size: 0.72rem;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 4px;
+      }
+      .stat-value {
+        font-family: 'Syne', sans-serif;
+        font-size: 1.2rem;
+        font-weight: 600;
+      }
+      .stat-value.green { color: var(--green); }
+      .stat-value.purple { color: var(--accent); }
+
+      .cookie-info {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 0.85rem 1rem;
+        font-size: 0.82rem;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+      .cookie-info strong { color: var(--text); font-weight: 500; }
+    </style>
   </head>
-  <body></body>
+  <body>
+
+    <!-- ── LOGIN FORM ── -->
+    <div class="card" id="login-view">
+      <div class="logo-row">
+        <div class="logo-mark">V</div>
+        <span class="logo-label">Vertex</span>
+      </div>
+
+      <h1>Welcome back</h1>
+      <p class="subtitle">Sign in to continue to your dashboard</p>
+
+      <div class="alert error" id="error-msg">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3.5M8 11h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <span id="error-text">Invalid username or password.</span>
+      </div>
+
+      <div class="field">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="e.g. admin" autocomplete="username" />
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" />
+      </div>
+
+      <label class="remember-row">
+        <input type="checkbox" id="remember" checked />
+        <span>Keep me signed in for 7 days</span>
+      </label>
+
+      <button class="btn" onclick="handleLogin()">Sign in</button>
+
+      <hr class="divider" />
+      <p class="footer-link">
+        Demo credentials: <a href="#" onclick="fillDemo();return false;">admin / password123</a>
+      </p>
+    </div>
+
+    <!-- ── DASHBOARD ── -->
+    <div class="card" id="dashboard">
+      <div class="dash-header">
+        <div>
+          <h1 id="welcome-name">Hello, admin 👋</h1>
+          <p class="welcome-sub">You're signed in via saved session</p>
+        </div>
+        <button class="logout-btn" onclick="handleLogout()">Sign out</button>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat">
+          <div class="stat-label">Session status</div>
+          <div class="stat-value green">Active</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Expires in</div>
+          <div class="stat-value purple" id="expires-in">—</div>
+        </div>
+      </div>
+
+      <div class="cookie-info" id="cookie-display">
+        <strong>🍪 Stored cookie</strong><br/>
+        Loading…
+      </div>
+    </div>
+
+    <script>
+      /* ─── Cookie helpers ─── */
+      function setCookie(name, value, days) {
+        const expires = new Date(Date.now() + days * 864e5).toUTCString();
+        document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Strict`;
+      }
+
+      function getCookie(name) {
+        const match = document.cookie
+          .split('; ')
+          .find(row => row.startsWith(name + '='));
+        return match ? decodeURIComponent(match.split('=')[1]) : null;
+      }
+
+      function deleteCookie(name) {
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+      }
+
+      /* ─── Mock user store ─── */
+      const USERS = { admin: 'password123', user: 'hello123' };
+
+      /* ─── Check existing session on load ─── */
+      window.addEventListener('DOMContentLoaded', () => {
+        const saved = getCookie('session_user');
+        const exp   = getCookie('session_exp');
+        if (saved && exp && Date.now() < Number(exp)) {
+          showDashboard(saved, Number(exp));
+        }
+      });
+
+      /* ─── Login handler ─── */
+      function handleLogin() {
+        const u = document.getElementById('username').value.trim();
+        const p = document.getElementById('password').value;
+        const remember = document.getElementById('remember').checked;
+
+        const err = document.getElementById('error-msg');
+        err.classList.remove('show');
+
+        if (!u || !p) {
+          document.getElementById('error-text').textContent = 'Please enter your username and password.';
+          err.classList.add('show');
+          return;
+        }
+
+        if (USERS[u] !== p) {
+          document.getElementById('error-text').textContent = 'Invalid username or password.';
+          err.classList.add('show');
+          return;
+        }
+
+        const days = remember ? 7 : 0.5;  // 7 days or 30 min
+        const expMs = Date.now() + days * 864e5;
+
+        setCookie('session_user', u, days);
+        setCookie('session_exp',  String(expMs), days);
+
+        showDashboard(u, expMs);
+      }
+
+      /* ─── Show dashboard ─── */
+      function showDashboard(username, expMs) {
+        document.getElementById('login-view').style.display = 'none';
+        const dash = document.getElementById('dashboard');
+        dash.style.display = 'block';
+
+        document.getElementById('welcome-name').textContent = `Hello, ${username} 👋`;
+
+        const msLeft = expMs - Date.now();
+        const hLeft  = Math.floor(msLeft / 36e5);
+        const mLeft  = Math.floor((msLeft % 36e5) / 6e4);
+        document.getElementById('expires-in').textContent =
+          hLeft >= 24
+            ? `${Math.floor(hLeft/24)}d ${hLeft%24}h`
+            : hLeft > 0 ? `${hLeft}h ${mLeft}m` : `${mLeft}m`;
+
+        document.getElementById('cookie-display').innerHTML =
+          `<strong>🍪 Stored cookies</strong><br/>` +
+          `<code style="font-family:monospace;font-size:0.78rem;opacity:0.8">session_user = <em>${username}</em></code><br/>` +
+          `<code style="font-family:monospace;font-size:0.78rem;opacity:0.8">session_exp &nbsp;= <em>${new Date(expMs).toLocaleString()}</em></code><br/><br/>` +
+          `<span style="font-size:0.8rem">Cookies persist across page reloads — refresh to confirm the session is remembered.</span>`;
+      }
+
+      /* ─── Logout ─── */
+      function handleLogout() {
+        deleteCookie('session_user');
+        deleteCookie('session_exp');
+        document.getElementById('dashboard').style.display = 'none';
+        document.getElementById('login-view').style.display = 'block';
+        document.getElementById('username').value = '';
+        document.getElementById('password').value = '';
+      }
+
+      /* ─── Demo fill ─── */
+      function fillDemo() {
+        document.getElementById('username').value = 'admin';
+        document.getElementById('password').value = 'password123';
+      }
+
+      /* ─── Enter key support ─── */
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && document.getElementById('login-view').style.display !== 'none') {
+          handleLogin();
+        }
+      });
+    </script>
+  </body>
 </html>
